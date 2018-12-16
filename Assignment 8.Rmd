@@ -1,0 +1,76 @@
+---
+title: "Assignment 8 -- Kara Bonham"
+output: html_notebook
+---
+###Load the *gapminder* and *tidyverse* libraries:
+```{r}
+# install.packages("gapminder")
+# install.packages("tidyverse")
+library(gapminder)
+library(tidyverse)
+```
+
+
+###Summarized *gapminder* data:
+```{r}
+data("gapminder")
+summary(gapminder)
+```
+
+###The `attach()` function
+I have used the `attach()` function to skip using the name of the dataframe in every line and just reference the variables within gapminder from here on.
+```{r}
+attach(gapminder)
+```
+
+
+###Histogram and Scatterplot:
+```{r}
+hist(log(pop))
+```
+```{r}
+plot(lifeExp ~ log(gdpPercap))
+```
+
+
+###A t-test of life-expectancy differences between South Africa and Ireland:
+```{r}
+df1 <- gapminder %>% 
+  select(country, lifeExp) %>% 
+  filter(country == "South Africa" |
+           country == "Ireland")
+t.test(data = df1, lifeExp ~ country)
+```
+The p-value is 4.466e-09, which is less than 0.05, which means the difference in life expectancy between Ireland and South Africa is significantly different.
+
+
+###Life Expectancy vs. gdp-per-capita:
+```{r}
+gapminder %>%
+  filter(gdpPercap < 50000) %>%
+  ggplot(aes(x=log(gdpPercap), y=lifeExp, col=continent, size=pop))+
+  geom_point(alpha=0.3)+
+  geom_smooth(method = lm)
+```
+
+
+###Faceted plot:
+```{r}
+gapminder %>%
+  filter(gdpPercap < 50000) %>%
+  ggplot(aes(x=log(gdpPercap), y=lifeExp, col=year, size=pop))+
+  geom_point(alpha=0.3)+
+  geom_smooth(method = lm)+
+  facet_wrap(~continent)
+```
+
+
+###Linear model test of life expectancy by gdp-per-capita and population:
+```{r}
+summary(lm(lifeExp ~ gdpPercap+pop))
+```
+
+
+
+
+
